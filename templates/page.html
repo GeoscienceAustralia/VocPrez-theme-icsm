@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ICSM VocPrez</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather">
+	<link rel="stylesheet" href="{{ url_for('static', filename='vocprez.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	{%- if extra_styling is defined %}
+	<style>
+		{{ extra_styling }}
+	</style>
+	{% endif %}
+</head>
+
+<body>
+{% set active_page = active_page -%}
+	<!-- <div id="vocprez">
+		made by <a href="http://github.com/rdflib/VocPrez">VocPrez</a>&nbsp;
+		<a id="versionlink" href="https://github.com/RDFLib/VocPrez/releases/tag/{{ utils.version() }}">{{ utils.version() }}</a>
+	</div> -->
+	<div id="banner">
+		<div id="black-gradient">
+			<img id="banner-img" src="{{ url_for('static', filename='map.jpg') }}" alt="banner image">
+			<div id="white-gradient"></div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="navigation">
+			<div class="topnav-wrapper">
+				<a href="https://www.icsm.gov.au/" id="logo-link">
+					<img id="logo" src="{{ url_for('static', filename='logo.png') }}" alt="logo">
+				</a>
+				<nav id="topnav">
+					<a href="https://www.icsm.gov.au/about" class="topnav-link">About</a>
+					<a href="https://www.icsm.gov.au/what-we-do" class="topnav-link">What we do</a>
+					<a href="https://www.icsm.gov.au/australian-geospatial-reference-system" class="topnav-link">AGRS</a>
+					<a href="https://www.icsm.gov.au/gda2020" class="topnav-link">GDA2020</a>
+					<a href="https://www.icsm.gov.au/education" class="topnav-link">Education</a>
+					<a href="https://www.icsm.gov.au/publications" class="topnav-link">Publications</a>
+					<a href="https://www.icsm.gov.au/contact" class="topnav-link">Contact</a>
+				</nav>
+				<div id="topsearch">
+					<input type="text" name="search" id="topsearch-input" placeholder="Search...">
+					<button id="topsearch-button">O</button>
+				</div>
+			</div>
+		</div>
+		<h1 id="page-title">
+			{% if active_page == 'vocab' %}
+			ICSM Vocabularies
+			{% elif active_page == 'search' %}
+			Search
+			{% elif active_page == 'sparql' %}
+			SPARQL
+			{% elif active_page == 'about' %}
+			About VocPrez
+			{% else %}
+			ICSM VocPrez
+			{% endif %}
+		</h1>
+		<div class="content-wrapper">
+			<div id="mainmenu-wrapper">
+				<div id="mainmenu">
+					<h2 id="sidenav-title">In this section</h2>
+					<nav id="sidenav">
+						{% include 'nav.html' %}
+					</nav>
+				</div>
+				<div id="vocprez-2">
+					made by <a href="http://github.com/rdflib/VocPrez">VocPrez</a>&nbsp;
+					<a id="versionlink-2" href="https://github.com/RDFLib/VocPrez/releases/tag/{{ utils.version() }}">{{ utils.version() }}</a>
+				</div>
+			</div>
+			<div id="content">
+				<div id="content-text">
+					{% block content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+		<div id="footer-wrapper">
+			<div id="footer">
+				<div class="footer-block">
+					<h3><a class="footer-title-link" href="https://www.icsm.gov.au/about">About</a></h3>
+					<a class="footer-link" href="https://www.icsm.gov.au/about/our-role">Our role</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/about/communication">Communication</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/about/strategic-plan">Strategic plan</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/about/legal">Copyright</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/node/45">Disclaimer</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/node/64">Privacy</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/members">MEMBERS Section</a>
+				</div>
+				<div class="footer-block">
+					<h3><a class="footer-title-link" href="https://www.icsm.gov.au/what-we-do">What we do</a></h3>
+					<a class="footer-link" href="https://www.icsm.gov.au/what-we-do/addressing">Addressing</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/what-we-do/cadastre">Cadastre</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/what-we-do/geodesy">Geodesy</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/what-we-do/place-names">Place Names</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/what-we-do/topographic-information">Topographic Information</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/what-we-do/tides-and-mean-sea-level">Tides and Mean Sea Level</a>
+				</div>
+				<div class="footer-block">
+					<h3><a class="footer-title-link" href="https://www.icsm.gov.au/education">Education</a></h3>
+					<a class="footer-link" href="https://www.icsm.gov.au/education/fundamentals-mapping">Fundamentals of Mapping</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/education/fundamentals-land-ownership-land-boundaries-and-surveying">Fundamentals of Land Ownership</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/publications/australian-tides-manual-v50">Australian Tides Manua</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/education/gazetteer-australia">Gazetteer of Australia</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/upgrades-australian-geospatial-reference-system">Upgrades to the Australian Geospatial Reference System</a>
+				</div>
+				<div class="footer-block">
+					<h3><a class="footer-title-link" href="https://www.icsm.gov.au/publications">Publications</a></h3>
+					<a class="footer-link" href="https://www.icsm.gov.au/publications/australian-tides-manual-v50">Australian Tides Manual</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/publications/standard-australian-survey-control-network-special-publication-1-sp1">Control Surveys (SP1)</a>
+					<a class="footer-link" href="https://www.icsm.gov.au/gda2020-and-gda94-technical-manuals">GDA2020 Technical Manual</a>
+				</div>
+			</div>
+			<div id="credits">
+				<div>ABN 33 830 643 298</div>
+				<div><a class="credit-link" href="https://surroundaustralia.com/">Website by SURROUND Australia Pty. Ltd.</a></div>
+				<div>©  Commonwealth of Australia on behalf of ICSM</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
