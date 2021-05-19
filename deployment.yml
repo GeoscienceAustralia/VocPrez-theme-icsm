@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: icsm-vocprez-deployment
+  labels:
+    app: icsm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: icsm
+  template:
+    metadata:
+      labels:
+        app: icsm
+    spec:
+      containers:
+      - name: icsm-vocprez
+        image: 680471986828.dkr.ecr.ap-southeast-2.amazonaws.com/icsm/vocprez:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: icsm-vocprez-service
+spec:
+  selector:
+    app: icsm
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
