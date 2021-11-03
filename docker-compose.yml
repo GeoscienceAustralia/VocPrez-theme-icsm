@@ -1,0 +1,17 @@
+#version: 3.8
+version: "3.0"
+
+services:
+  app:
+    image: vocprez-icsm
+    #image: 284038377298.dkr.ecr.ap-southeast-2.amazonaws.com/vocprez-icsm:latest
+    ports:
+      - 5000:5000
+
+  fuseki:
+    image: stain/jena-fuseki
+    ports:
+      - 3030:3030
+    environment:
+      ADMIN_PASSWORD: "${FUSEKI_PASSWORD}"
+      FUSEKI_DATASET_1: icsm-vocabs
