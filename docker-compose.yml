@@ -1,17 +1,64 @@
-#version: 3.8
-version: "3.0"
+version: "3.7"
+
+x-aws-loadbalancer: arn:aws:elasticloadbalancing:ap-southeast-2:284038377298:loadbalancer/app/vocprez-icsm-alb/e38f528a75cf0966
 
 services:
   app:
-    image: vocprez-icsm
-    #image: 284038377298.dkr.ecr.ap-southeast-2.amazonaws.com/vocprez-icsm:latest
+    #image: vocprez-icsm
+    image: 284038377298.dkr.ecr.ap-southeast-2.amazonaws.com/vocprez-icsm-80:latest
     ports:
-      - 5000:5000
+      - 80:80
+      - 443:443
 
-  fuseki:
-    image: stain/jena-fuseki
-    ports:
-      - 3030:3030
-    environment:
-      ADMIN_PASSWORD: "${FUSEKI_PASSWORD}"
-      FUSEKI_DATASET_1: icsm-vocabs
+x-aws-cloudformation:
+  Resources:
+    AppTCP80Listener:
+      Properties:
+        # Implement the redirect to HTTPS
+        # Note that this will eliminate the natural reference to AppTCP80TargetGroup
+        DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Port: 443
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+    AppTCP443Listener:
+      Properties:
+        # Set protocol and associate with the SSL certificate
+        Protocol: "HTTPS"
+        Certificates:
+          - arn:aws:acm:ap-southeast-2:284038377298:certificate/be8d4fa2-281d-42e0-918d-225fea753403
+        # Replace reference to WhoamiTCP443TargetGroup with this Fixed Response
+        DefaultActions:
+          - Type: "fixed-response"
+            FixedResponseConfig:
+              ContentType: "text/plain"
+              MessageBody: "BAD DOMAIN NAME"
+              StatusCode: "200"
+    AppTCP443TargetGroup:
+    # Match DOMAIN and forward to the port 80 Target Group
+    AppTCP443BaseRule:
+      Type: AWS::ElasticLoadBalancingV2::ListenerRule
+      Properties:
+        ListenerArn:
+          Ref: AppTCP443Listener
+        Priority: 40000
+        Conditions:
+          - Field: host-header
+            HostHeaderConfig:
+              Values:
+                - nonprod.icsm.vocabs.ga.gov.au
+        Actions:
+          - Type: forward
+            ForwardConfig:
+              TargetGroups:
+                - TargetGroupArn:
+                    Ref: AppTCP80TargetGroup
+    AppService:
+      Properties:
+        # Eliminate the reference to AppTCP443TargetGroup
+        LoadBalancers:
+        - ContainerName: app
+          ContainerPort: 80
+          TargetGroupArn:
+            Ref: AppTCP80TargetGroup
